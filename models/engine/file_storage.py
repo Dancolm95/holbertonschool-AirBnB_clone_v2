@@ -54,6 +54,7 @@ class FileStorage:
 
 def delete(self, obj=None):
     """
+    delete an object from in-memory storage
     """
     if (obj is None):
         return
@@ -63,3 +64,8 @@ def delete(self, obj=None):
 
     if key in FileStorage.__objects.keys():
         del FileStorage.__objects[key]
+def close(self):
+    """
+    deserialize json file to objects
+    """
+    self.reload()
