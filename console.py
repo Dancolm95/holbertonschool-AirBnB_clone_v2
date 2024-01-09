@@ -115,16 +115,37 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """ Create an object of any class"""
-        if not args:
-            print("** class name missing **")
-            return
-        elif args not in HBNBCommand.classes:
-            print("** class doesn't exist **")
-            return
-        new_instance = HBNBCommand.classes[args]()
-        storage.save()
+        parsed_obj = {}
+        arg_list = args.split(" ", 1)
+
+        if len(arg_list) > 1:
+            kwargs_pattern = re.compile(r'(\w*)=(\"?[a-z0-9A-Z_.@\\"-]*)\"?', re.MULTILINE)
+            matched_kwargs = kwargs_pattern.findall(arg_list[1])
+
+            if matched_kwargs:
+                for v in matched_kwargs:
+                    if v[1].find("\"") >= 0:
+                        parsed_obj[v[0]] = v[1].strip("\"").replace("_", " ").replace("\\", "")
+
+                    elif re.search(r'-?\d*\.\d*', v[1]):
+                        parsed_obj[v[0]] = float(v[1])
+                    elif re.search(r'-?\d*', v[1]):
+                        parsed_obj[v[0]] = int(v[1])
+                    else:
+                        parsed_obj[v[0]] = v[1].strip("\"").replace("_", " ").replace("\\", "")
+            else:
+                pass
+        else:
+            if not arg_list[0]:
+                print("** class name missing **")
+                return
+            elif arg_list[0] not in HBNBCommand.classes:
+                print("** class doesn't exist **")
+                return
+
+        new_instance = HBNBCommand.classes[arg_list[0]](**parsed_obj)
+        new_instance.save()
         print(new_instance.id)
-        storage.save()
 
     def help_create(self):
         """ Help information for the create method """
