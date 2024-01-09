@@ -52,20 +52,21 @@ class FileStorage:
         except FileNotFoundError:
             pass
 
-def delete(self, obj=None):
+    def delete(self, obj=None):
     """
     delete an object from in-memory storage
     """
-    if (obj is None):
+        if (obj is None):
         return
 
-    dict_obj = obj.to_dict()
-    key = "{}.{}".format(dict_obj['__class__'], dict_obj.get("id"))
+        dict_obj = obj.to_dict()
+        key = "{}.{}".format(dict_obj['__class__'], dict_obj.get("id"))
 
-    if key in FileStorage.__objects.keys():
-        del FileStorage.__objects[key]
-def close(self):
+        if key in FileStorage.__objects.keys():
+            del FileStorage.__objects[key]
+
+    def close(self):
     """
     deserialize json file to objects
     """
-    self.reload()
+        self.reload()
