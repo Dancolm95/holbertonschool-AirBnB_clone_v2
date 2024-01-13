@@ -11,7 +11,7 @@ class FileStorage:
     def all(self, cls=None):
         """Returns a dictionary of models currently in storage"""
         if cls:
-            return {k: v for k, v in FileStorage.__objects.items() if type(v) == cls}
+            return {k: v for k, v in FileStorage.__objects.items() if isinstance(v, cls)}
 
         return FileStorage.__objects
 
@@ -53,11 +53,11 @@ class FileStorage:
             pass
 
     def delete(self, obj=None):
-    """
-    delete an object from in-memory storage
-    """
-        if (obj is None):
-        return
+        """
+        delete an object from in-memory storage
+        """
+        if obj is None:
+            return
 
         dict_obj = obj.to_dict()
         key = "{}.{}".format(dict_obj['__class__'], dict_obj.get("id"))
@@ -66,7 +66,7 @@ class FileStorage:
             del FileStorage.__objects[key]
 
     def close(self):
-    """
-    deserialize json file to objects
-    """
+        """
+        deserialize json file to objects
+        """
         self.reload()
