@@ -114,38 +114,48 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_create(self, args):
-        """ Create an object of any class"""
-        parsed_obj = {}
-        arg_list = args.split(" ", 1)
+        """ Create an object of any class with given parameters """
 
-        if len(arg_list) > 1:
-            kwargs_pattern = re.compile(r'(\w*)=(\"?[a-z0-9A-Z_.@\\"-]*)\"?', re.MULTILINE)
-            matched_kwargs = kwargs_pattern.findall(arg_list[1])
+        if not args:
+            print("** class name missing **")
+            return
 
-            if matched_kwargs:
-                for v in matched_kwargs:
-                    if v[1].find("\"") >= 0:
-                        parsed_obj[v[0]] = v[1].strip("\"").replace("_", " ").replace("\\", "")
+        # Parse class name
+        class_name, *params = args.split()
 
-                    elif re.search(r'-?\d*\.\d*', v[1]):
-                        parsed_obj[v[0]] = float(v[1])
-                    elif re.search(r'-?\d*', v[1]):
-                        parsed_obj[v[0]] = int(v[1])
-                    else:
-                        parsed_obj[v[0]] = v[1].strip("\"").replace("_", " ").replace("\\", "")
+        if class_name not in HBNBCommand.classes:
+            print("** class doesn't exist **")
+            return
+
+        # Parse parameters
+        parsed_params = {}
+        for param in params:
+            key, value = param.split('=')
+            key = key.replace('_', ' ')  # replace underscores with spaces
+            if value.startswith('"') and value.endswith('"'):
+                # Handle string values
+                value = value[1:-1].replace('\\"', '"')  # unescape double quotes
+            elif '.' in value:
+                # Handle float values
+                value = float(value)
             else:
-                pass
-        else:
-            if not arg_list[0]:
-                print("** class name missing **")
-                return
-            elif arg_list[0] not in HBNBCommand.classes:
-                print("** class doesn't exist **")
-                return
+                # Handle integer values
+                try:
+                    value = int(value)
+                except ValueError:
+                    print(f"Invalid value for parameter {key}")
+                    return
+            parsed_params[key] = value
 
-        new_instance = HBNBCommand.classes[arg_list[0]](**parsed_obj)
-        new_instance.save()
+        # Create an instance of the specified class with the given parameters
+        new_instance = HBNBCommand.classes[class_name](**parsed_params)
+        storage.save()
         print(new_instance.id)
+
+        # Uncomment the following line if you want to see the created object details
+        # print(new_instance)
+
+        storage.save()
 
     def help_create(self):
         """ Help information for the create method """
