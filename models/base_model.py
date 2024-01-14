@@ -6,7 +6,6 @@ from datetime import datetime
 
 class BaseModel:
     """A base class for all hbnb models"""
-    self.id = str(uuid.uuid4())
     def __init__(self, *args, **kwargs):
         """Instatntiates a new model"""
         if not kwargs:
@@ -21,6 +20,7 @@ class BaseModel:
             kwargs['created_at'] = datetime.strptime(kwargs['created_at'],
                                                      '%Y-%m-%dT%H:%M:%S.%f')
             del kwargs['__class__']
+            self.id = str(uuid.uuid4())
             self.__dict__.update(kwargs)
 
     def __str__(self):
