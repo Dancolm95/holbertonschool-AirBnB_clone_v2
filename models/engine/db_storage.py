@@ -2,6 +2,8 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 
+Base = declarative_base()
+
 class DBStorage:
     __engine = None
     __session = None
