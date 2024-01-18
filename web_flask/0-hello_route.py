@@ -1,5 +1,7 @@
 #!/usr/bin/python3
-"""""
+""" Script start a flask application and defines a single route.
+Routes:
+      /: Displays 'Hello HBNB'
 """
 from flask import Flask
 app = Flask(__name__)
