@@ -121,40 +121,49 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
             return
 
-        params = args.split()
-        name_class = params[0]
+        comands = args [:]
+        comands = comands.partition(' ')
+        classes = comands[0]
 
-        if name_class not in HBNBCommand.classes:
+        if classes not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
 
-        new_instance = HBNBCommand.classes[name_class]()
-
-        for i in range(1, len(params)):
-            key_value = params[i].split('=')
-            key, value = key_value
-
-            if len(key_value) > 1:
-                if value[0] == value[-1] == '"':
-                    value = value.replace('_', ' ')
-                    value = value.replace('\\"', '"')
-                    setattr(new_instance, key, value[1:-1])
-                elif '.' in value:
-                    # setattr(new_instance, key, float(value))
-                    try:
-                        value = float(value)
-                        setattr(new_instance, key, value)
-                    except ValueError:
+        new_instance = HBNBCommand.classes[classes]()
+        commands = commands[2]
+        new_dict = {}   
+        while len(commands) !=0:
+            commands = commands.partition(" ")
+            parameter = commands[0].partition("=")
+            key = parameter[0]
+            value = parameter[2]
+            if value.isdecimal():
+                value = int(value)
+            else:
+                try:
+                    value = float(value)
+                except:
+                    if value[0] is '\"' and value [-1] is '\"':
+                        valid = 1
+                        value = value [1:-1]
+                        value = value.replace('_', ' ')
+                        index = value.find('\"', 1)
+                        for i in range(len(value)):
+                            if (i == 0 and value[i] == '"':
+                                    valid = 0
+                            if (value[i] == '"'):
+                                if (value[i - 1] != '\\':
+                                    valid = 0
+                        if (valid == 0):
+                            commands = commands[2]
+                            continue
+                    else:
+                        commands = commands[2]
                         continue
-                else:
-                    # setattr(new_instance, key, int(value))
-                    try:
-                        value = int(value)
-                        setattr(new_instance, key, int(value))
-                    except ValueError:
-                        continue
-
-        storage.save()
+            new_dict[key] = value
+            commands = commands[2]
+        new_instance.__dict__.update(new_dict)
+        new_instance.save()
         print(new_instance.id)
 
     def help_create(self):
