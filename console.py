@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-
 """ Console Module """
 import cmd
 import sys
@@ -20,16 +19,16 @@ class HBNBCommand(cmd.Cmd):
     prompt = '(hbnb) ' if sys.__stdin__.isatty() else ''
 
     classes = {
-               'BaseModel': BaseModel, 'User': User, 'Place': Place,
-               'State': State, 'City': City, 'Amenity': Amenity,
-               'Review': Review
-              }
+        'BaseModel': BaseModel, 'User': User, 'Place': Place,
+        'State': State, 'City': City, 'Amenity': Amenity,
+        'Review': Review
+    }
     dot_cmds = ['all', 'count', 'show', 'destroy', 'update']
     types = {
-             'number_rooms': int, 'number_bathrooms': int,
-             'max_guest': int, 'price_by_night': int,
-             'latitude': float, 'longitude': float
-            }
+        'number_rooms': int, 'number_bathrooms': int,
+        'max_guest': int, 'price_by_night': int,
+        'latitude': float, 'longitude': float
+    }
 
     def preloop(self):
         """Prints if isatty is false"""
@@ -114,56 +113,42 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
+    def _parse_args(self, params):
+        new_dict = {}
+        for p in params:
+            key_value = p.split('=')
+
+            if len(key_value) == 2:
+                key, value = key_value
+
+                if value[0] == value[-1] == '"':
+                    value = value.replace('_', ' ').replace('\\"', '"')
+                    new_dict[key] = value[1:-1]
+                elif isinstance(eval(value), float) and '.' != value[-1]:
+                    new_dict[key] = float(value)
+                elif isinstance(eval(value), int):
+                    new_dict[key] = int(value)
+        return new_dict
+
     def do_create(self, args):
         """ Create an object of any class"""
-
         if not args:
             print("** class name missing **")
             return
 
-        comands = args [:]
-        comands = comands.partition(' ')
-        classes = comands[0]
+        params = args.split()
+        name_class = params[0]
 
-        if classes not in HBNBCommand.classes:
+        if name_class not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
 
-        new_instance = HBNBCommand.classes[classes]()
-        commands = commands[2]
-        new_dict = {}   
-        while len(commands) !=0:
-            commands = commands.partition(" ")
-            parameter = commands[0].partition("=")
-            key = parameter[0]
-            value = parameter[2]
-            if value.isdecimal():
-                value = int(value)
-            else:
-                try:
-                    value = float(value)
-                except:
-                    if value[0] is '\"' and value [-1] is '\"':
-                        valid = 1
-                        value = value [1:-1]
-                        value = value.replace('_', ' ')
-                        index = value.find('\"', 1)
-                        for i in range(len(value)):
-                            if (i == 0 and value[i] == '"':
-                                    valid = 0
-                            if (value[i] == '"'):
-                                if (value[i - 1] != '\\':
-                                    valid = 0
-                        if (valid == 0):
-                            commands = commands[2]
-                            continue
-                    else:
-                        commands = commands[2]
-                        continue
-            new_dict[key] = value
-            commands = commands[2]
+        new_dict = self._parse_args(params[1:])
+
+        new_instance = HBNBCommand.classes[name_class]()
         new_instance.__dict__.update(new_dict)
         new_instance.save()
+        # storage.save()
         print(new_instance.id)
 
     def help_create(self):
@@ -227,7 +212,7 @@ class HBNBCommand(cmd.Cmd):
         key = c_name + "." + c_id
 
         try:
-            del(storage.all()[key])
+            del (storage.all()[key])
             storage.save()
         except KeyError:
             print("** no instance found **")
@@ -359,6 +344,7 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the update class """
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
