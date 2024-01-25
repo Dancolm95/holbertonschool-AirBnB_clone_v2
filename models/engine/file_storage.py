@@ -59,3 +59,7 @@ class FileStorage:
         if bool(obj):
             key = f'{obj.__class__.__name__}.{obj.id}'
             FileStorage.__objects.pop(key, None)
+    
+    def close(self):
+        """call the reload method"""
+        self.reload()

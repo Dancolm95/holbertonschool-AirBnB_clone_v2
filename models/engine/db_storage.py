@@ -51,3 +51,7 @@ class DBStorage:
         Session = scoped_session(session_factory)
         self.__session = Session()
 
+    def close(self):
+        """close the wprking SQLalchemy session"""
+        self.__session.close()
+
