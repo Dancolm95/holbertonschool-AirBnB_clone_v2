@@ -56,5 +56,5 @@ class DBStorage:
 
     def close(self):
         """close the wprking SQLalchemy session"""
-        self.__session.close()
+        self.__session.reload()
 
