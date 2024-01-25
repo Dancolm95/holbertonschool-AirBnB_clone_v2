@@ -24,19 +24,15 @@ class DBStorage:
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
-        session = self.__session
-        if cls:
-            objects = session.query(cls).all()
+        """
+        """
+        if cls is None:
+            objs = self.__session.query(State).all()
         else:
-            objects = []
-            for model in Base.metadata.tables.keys():
-                objects.extend(session.query(Base.metadata.tables[model]).all())
-
-        result = {}
-        for obj in objects:
-            key = "{}.{}".format(type(obj).__name__, obj.id)
-            result[key] = obj
-        return result
+            if type(cls) == str:
+                cls = eval(cls)
+            objs = self.__session.query(cls)
+        return {"{}.{}".format(type(o).__name__, o.id): o for o in objs}
 
     def new(self, obj):
         self.__session.add(obj)
@@ -57,6 +53,6 @@ class DBStorage:
         self.__session = Session()
 
     def close(self):
-        """close the wprking SQLalchemy session"""
+        """close the working SQLAlchemy session"""
         self.__session.close()
 
