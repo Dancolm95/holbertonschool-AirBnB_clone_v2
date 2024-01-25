@@ -49,12 +49,14 @@ class DBStorage:
             self.__session.delete(obj)
 
     def reload(self):
+        """create all tables in the database and initialize a new session."""
         Base.metadata.create_all(self.__engine)
-        session_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
+        session_factory = sessionmaker(bin=self.__engine,
+                                        expire_on_commit=False)
         Session = scoped_session(session_factory)
         self.__session = Session()
 
     def close(self):
         """close the wprking SQLalchemy session"""
-        self.__session.reload()
+        self.__session.close()
 
