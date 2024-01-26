@@ -21,7 +21,8 @@ def hbnb():
 def c_is_fun(text):
     """Nuestro primera variable"""
     cleaned_text = text.replace('_', ' ')
-    return f"C {cleaned_text}" 
+    return f"C {cleaned_text}"
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port='5000')
