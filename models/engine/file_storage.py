@@ -22,8 +22,8 @@ class FileStorage:
         return self.__objects
 
     def new(self, obj):
-        """Adds new object to storage dictionary"""
-        self.all().update({obj.to_dict()['__class__'] + '.' + obj.id: obj})
+        """set in __objects obj with key <obj_class_name>.id"""
+        self.__objects["{}.{}".format(type(obj).__name__, obj.id)] = obj
 
     def save(self):
         """Saves storage dictionary to file"""
@@ -47,9 +47,10 @@ class FileStorage:
 
     def delete(self, obj=None):
         """Delete a instance"""
-        if bool(obj):
-            key = f'{obj.__class__.__name__}.{obj.id}'
-            FileStorage.__objects.pop(key, None)
+        try:
+            del self.__objects["{}.{}".format(type(obj).__name__, obj.id)]
+        except (AttributeError, KeyError):
+            pass
     
     def close(self):
         """call the reload method"""
