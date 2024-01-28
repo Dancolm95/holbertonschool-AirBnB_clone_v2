@@ -1,27 +1,29 @@
 #!/usr/bin/python3
-"""
-starts a Flask web application
-"""
+"""Corriendo web service con flask"""
 
 from flask import Flask
+
 app = Flask(__name__)
 
 
 @app.route('/', strict_slashes=False)
 def index():
-    """returns Hello HBNB!"""
+    """Esta ruta muestra un saludo en el home"""
     return 'Hello HBNB!'
 
 
 @app.route('/hbnb', strict_slashes=False)
 def hbnb():
-    """returns HBNB"""
+    """Nuestro primer recurso"""
     return 'HBNB'
 
+
 @app.route('/c/<text>', strict_slashes=False)
-def cisfun(text):
-    """: display “C ” followed by the value of the text variable"""
-    return 'C' + text.replace('_', ' ')
+def c_is_fun(text):
+    """Nuestro primera variable"""
+    cleaned_text = text.replace('_', ' ')
+    return f"C {cleaned_text}"
+
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port='5000')
+    app.run(host='0.0.0.0', port=5000)

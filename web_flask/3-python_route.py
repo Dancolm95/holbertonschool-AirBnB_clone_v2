@@ -1,35 +1,37 @@
 #!/usr/bin/python3
-"""Starts a flask application and defines a single route
-"""
+"""Corriendo web service con flask"""
 
 from flask import Flask
 
 app = Flask(__name__)
 
+
 @app.route("/", strict_slashes=False)
-def hello_hbnb():
-    """handle requests for the root route"""
+def home():
+    """Esta ruta muestra un saludo en el home"""
     return "Hello HBNB!"
 
 
 @app.route("/hbnb", strict_slashes=False)
-def main_hbnb():
-    """handle requests for the hbnb route"""
+def hbnb():
+    """Nuestro primer recurso"""
     return "HBNB"
 
 
 @app.route("/c/<text>", strict_slashes=False)
-def c_hbnb(text: str):
-    """handle requests for route: c with query param: text"""
-    return "C {}".format(text.replace("_", " "))
+def c_is_fun(text):
+    """Nuestro primera variable"""
+    cleaned_text = text.replace('_', ' ')
+    return f"C {cleaned_text}"
 
 
 @app.route("/python", strict_slashes=False)
 @app.route("/python/<text>", strict_slashes=False)
-def python_hbnb(text="is cool"):
-    """handle requests for route: python with query param: text"""
-    return "Python {}".format(text.replace("_", " "))
+def Python_is_cool(text='is cool'):
+    """Python si es genial!!!"""
+    cleaned_text = text.replace('_', ' ')
+    return f"Python {cleaned_text}"
 
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0")
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)

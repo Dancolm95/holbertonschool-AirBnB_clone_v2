@@ -1,20 +1,22 @@
 #!/usr/bin/python3
-""" Starts a flask application, and defines a single route
-"""
+"""Corriendo web service con flask"""
 
 from flask import Flask
 
 app = Flask(__name__)
 
+
 @app.route("/", strict_slashes=False)
-def hello_hbnb():
-    """handle requests for the root route"""
-    return "Hello HBNB"
+def home():
+    """Esta ruta muestra un saludo en el home"""
+    return "Hello HBNB!"
+
 
 @app.route("/hbnb", strict_slashes=False)
-def main_hbnb():
-    """handle request for the hbnb route"""
+def hbnb():
+    """Nuestro primer recurso"""
     return "HBNB"
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0")
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
